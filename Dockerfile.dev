@@ -1,0 +1,19 @@
+FROM node:14.15-alpine
+
+# set working directory inside Docker container
+WORKDIR /app
+
+# add node to path to access npm commands
+ENV PATH /app/node_modules/.bin:$PATH
+
+# install dependencies
+COPY package.json ./
+COPY package-lock.json ./
+
+RUN npm install --silent
+
+# add other files from app to Docker container
+COPY . ./
+
+# will change after react is added
+CMD ["npm","run","server"]
