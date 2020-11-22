@@ -2,10 +2,11 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 
-const errorController = require('./controllers/errorController');
+const globalErrorHandler = require('./controllers/errorController');
 
 const userRouter = require('./routes/userRoutes');
 const AppError = require('./utils/appError');
+
 app.use(express.json());
 app.use(morgan('dev'));
 
@@ -29,7 +30,5 @@ app.all('*', (req, res, next) => {
 });
 
 // global error handling middle ware for development
-app.use((err, req, res, next) => {
-  errorController.sendDevError(err, res);
-});
+app.use(globalErrorHandler);
 module.exports = app;
