@@ -4,7 +4,7 @@
   "description": "An application to track bugs in production and development.",
   "main": "index.js",
   "scripts": {
-    "test": "set NODE_ENV=test&&mocha",
+    "test": "set NODE_ENV=test&&mocha --require test/fixtures.js",
     "server": "nodemon server.js"
   },
   "author": "Kristian Roopnarine",
@@ -32,6 +32,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "mocha": "^8.2.1",
     "nodemon": "^2.0.6",
-    "prettier": "^2.1.2"
+    "prettier": "^2.1.2",
+    "supertest": "^6.0.1"
   }
 }

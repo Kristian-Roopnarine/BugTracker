@@ -1,6 +1,5 @@
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-
+const db = require('./db');
 process.on('uncaughtException', (err) => {
   console.log('Uncaught Exception. Shutting down..');
   console.log(err.name, err.message);
@@ -15,13 +14,9 @@ const dbString =
     ? process.env.DATABASE_LOCAL_URL
     : process.env.DATABASE_TEST_URL;
 
-mongoose
-  .connect(dbString, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-  })
-  .then(() => console.log('Connection successful'));
+db.connectDB(dbString).then(() => {
+  console.log('Connected to database..');
+});
 
 const port = process.env.PORT || 5000;
 
