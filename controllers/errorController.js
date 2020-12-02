@@ -8,7 +8,7 @@ const handleCastErrorDB = (err) => {
 const handleDuplicateFieldDB = (err) => {
   const value = err.keyValue;
   const message = `Duplicate field value : ${value}. PLease use another value!`;
-  return new AppError(message, 400);
+  return new AppError(message, 500);
 };
 
 const handleValidationErrorDB = (err) => {
@@ -51,7 +51,9 @@ module.exports = (err, req, res, next) => {
     process.env.NODE_ENV === 'production' ||
     process.env.NODE_ENV === 'test'
   ) {
-    let error = { ...err };
+    // for some reason the message doesn't spread into 'error'
+    const { message } = err;
+    let error = { message, ...err };
     if (error.name === 'CastError') error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldDB(error);
     if (error.name === 'ValidationError') {
