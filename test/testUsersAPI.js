@@ -7,7 +7,7 @@ const Users = require('./../models/userSchema');
 const should = chai.should();
 chai.use(chaiHttp);
 
-const userApiURL = '/api/v1/users';
+const authApiUrl = '/api/v1/auth';
 const homeEndpoint = '/';
 const signupEndpoint = '/signup';
 const loginEndpoint = '/login';
@@ -41,7 +41,7 @@ function testCreateUserWrongPassword(done) {
     password: '123',
     passwordConfirm: '12',
   };
-  makePostRequest(server, userApiURL + signupEndpoint, userData).end(
+  makePostRequest(server, authApiUrl + signupEndpoint, userData).end(
     (err, res) => {
       res.should.have.status(500);
       done();
@@ -56,7 +56,7 @@ function testSignupEndpoint(done) {
     password: '123',
     passwordConfirm: '123',
   };
-  makePostRequest(server, userApiURL + signupEndpoint, userData).end(
+  makePostRequest(server, authApiUrl + signupEndpoint, userData).end(
     (err, res) => {
       res.should.have.status(200);
       expect(res.body.status).to.be.eq('created');
@@ -75,7 +75,7 @@ function testEmailExistsOnSignup(done) {
     password: '123',
     passwordConfirm: '123',
   };
-  makePostRequest(server, userApiURL + signupEndpoint, userData).end(
+  makePostRequest(server, authApiUrl + signupEndpoint, userData).end(
     (err, res) => {
       res.should.have.status(500);
       done();
@@ -87,7 +87,7 @@ function testLogin(done) {
     email: 'testing@testing.com',
     password: '123',
   };
-  makePostRequest(server, userApiURL + loginEndpoint, loginData).end(
+  makePostRequest(server, authApiUrl + loginEndpoint, loginData).end(
     (err, res) => {
       res.should.have.status(200);
       done();
@@ -100,7 +100,7 @@ function testLoginIncorrectPassword(done) {
     password: '12',
   };
 
-  makePostRequest(server, userApiURL + loginEndpoint, loginData).end(
+  makePostRequest(server, authApiUrl + loginEndpoint, loginData).end(
     (err, res) => {
       res.should.have.status(404);
       console.log(res.body);
@@ -116,7 +116,7 @@ function testLoginIncorrectEmail(done) {
     password: '123',
   };
 
-  makePostRequest(server, userApiURL + loginEndpoint, loginData).end(
+  makePostRequest(server, authApiUrl + loginEndpoint, loginData).end(
     (err, res) => {
       res.should.have.status(404);
       const { message } = res.body;
@@ -130,7 +130,7 @@ function testEmailPassNotProvided(done) {
     email: '',
     password: '',
   };
-  makePostRequest(server, userApiURL + loginEndpoint, loginData).end(
+  makePostRequest(server, authApiUrl + loginEndpoint, loginData).end(
     (err, res) => {
       res.should.have.status(404);
       const { message } = res.body;
@@ -149,7 +149,7 @@ describe('User API', function () {
     return addTestUser(Users);
   });
   it('GET / should return an array of users', (done) => {
-    makeGetRequest(server, userApiURL + homeEndpoint).end((err, res) => {
+    makeGetRequest(server, authApiUrl + homeEndpoint).end((err, res) => {
       res.should.have.status(200);
       res.body.data.users.should.be.a('array');
       done();
