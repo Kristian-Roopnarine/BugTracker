@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -35,6 +36,8 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -52,6 +55,20 @@ userSchema.methods.isPasswordCorrect = async function (
   actualPass
 ) {
   return await bcrypt.compare(enteredPass, actualPass);
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  // don't want to save token directly in database because a hacker could reset the password for a user
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  // will send this reset token through email
+  return resetToken;
 };
 
 const Users = mongoose.model('Users', userSchema);
