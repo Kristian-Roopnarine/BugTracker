@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const globalErrorHandler = require('./controllers/errorController');
 
 const authRouter = require('./routes/authRoutes.js');
+const userRouter = require('./routes/userRoutes.js');
 const AppError = require('./utils/appError');
 
 app.use(express.json());
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/auth', authRouter);
+app.use('api/v1/users', userRouter);
 
 // undefined route handler
 app.all('*', (req, res, next) => {
